@@ -26,26 +26,6 @@ const dt = table({
     'San Francisco': [165, 182, 251, 281, 314, 330, 300, 272, 267, 243, 189, 156]
 });
 
-// Sorted differences between Seattle and Chicago.
-// Table expressions use arrow function syntax.
-const differences = dt.derive({
-    month: d => op.row_number(),
-    diff: d => d.Seattle - d.Chicago
-})
-    .select('month', 'diff')
-    .orderby(desc('diff'))
-    .print();
-
-// Is Seattle more correlated with San Francisco or Chicago?
-// Operations accept column name strings outside a function context.
-const correlations = dt.rollup({
-    corr_sf: op.corr('Seattle', 'San Francisco'),
-    corr_chi: op.corr('Seattle', 'Chicago')
-})
-    .print();
-
-// Aggregate statistics per city, as output objects.
-// Reshape (fold) the data to a two column layout: city, sun.
 const aggregateStats = dt.fold(all(), { as: ['city', 'sun'] })
     .groupby('city')
     .rollup({
